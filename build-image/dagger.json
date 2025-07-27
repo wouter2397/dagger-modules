@@ -1,0 +1,24 @@
+{
+  "name": "build-image",
+  "engineVersion": "v0.18.14",
+  "sdk": {
+    "source": "go"
+  },
+  "dependencies": [
+    {
+      "name": "cosign",
+      "source": "github.com/wouter2397/dagger-modules/cosign",
+      "pin": "397616421beee22bedf1f2fd2179d9f3eee15c2a"
+    },
+    {
+      "name": "docker",
+      "source": "github.com/wouter2397/dagger-modules/docker",
+      "pin": "397616421beee22bedf1f2fd2179d9f3eee15c2a"
+    },
+    {
+      "name": "trivy",
+      "source": "github.com/wouter2397/dagger-modules/trivy",
+      "pin": "397616421beee22bedf1f2fd2179d9f3eee15c2a"
+    }
+  ]
+}

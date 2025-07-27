@@ -1,0 +1,1 @@
+FROM docker.io/library/nginx:1.23.0-alpine
