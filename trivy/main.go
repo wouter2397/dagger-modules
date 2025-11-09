@@ -1,16 +1,4 @@
-// A generated module for DaggerScan functions
-//
-// This module has been generated via dagger init and serves as a reference to
-// basic module structure as you get started with Dagger.
-//
-// Two functions have been pre-created. You can modify, delete, or add to them,
-// as needed. They demonstrate usage of arguments and return types using simple
-// echo and grep commands. The functions can be called from the dagger CLI or
-// from one of the SDKs.
-//
-// The first line in this comment block is a short description line and the
-// rest is a long description with more detail on the module's purpose or usage,
-// if appropriate. All modules should have a short description.
+// This module provides functionality to scan container images for vulnerabilities using Trivy.
 
 package main
 
@@ -46,12 +34,14 @@ type CycloneDXReport struct {
 
 type Trivy struct{}
 
+// Base returns a base Trivy container with caching configured.
 func (t *Trivy) Base() *dagger.Container {
 	return dag.Container().
 		From(fmt.Sprintf("aquasec/trivy")).
 		WithMountedCache("/root/.cache/trivy", dag.CacheVolume("trivy-db-cache"))
 }
 
+// ScanImage scans a container image for vulnerabilities using Trivy.
 func (t *Trivy) ScanImage(ctx context.Context, imageRef string) *dagger.File {
 
 	return t.Base().
@@ -66,6 +56,7 @@ func (t *Trivy) ScanImage(ctx context.Context, imageRef string) *dagger.File {
 			imageRef}).File("sbom.json")
 }
 
+// ScanContainer scans a container for vulnerabilities using Trivy.
 func (t *Trivy) ScanContainer(ctx context.Context, ctr *dagger.Container, imageRef string) *dagger.File {
 
 	return t.Base().
@@ -81,6 +72,7 @@ func (t *Trivy) ScanContainer(ctx context.Context, ctr *dagger.Container, imageR
 			"--input", "/scan/" + imageRef}).File("sbom.json")
 }
 
+// AnalyzeResults analyzes the SBOM file for vulnerabilities and returns a report.
 func (t *Trivy) AnalyzeResults(ctx context.Context, sbom *dagger.File) (string, error) {
 	var report CycloneDXReport
 	content, err := sbom.Contents(ctx)
@@ -124,6 +116,7 @@ func (t *Trivy) AnalyzeResults(ctx context.Context, sbom *dagger.File) (string, 
 	return output, nil
 }
 
+// ScanAndAnalyze scans a container image and analyzes the results for vulnerabilities.
 func (t *Trivy) ScanAndAnalyze(ctx context.Context, imageRef string) (string, error) {
 	sbom2 := t.ScanImage(ctx, imageRef)
 	return t.AnalyzeResults(ctx, sbom2)

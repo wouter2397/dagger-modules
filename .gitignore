@@ -1,4 +1,5 @@
 *.key
 *password
 *.pub
+secrets/
 build-image-local/
